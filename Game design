@@ -1,0 +1,189 @@
+def setup():
+    global FOOTBALL, VOLLEYBALL,FOOTBALL_X, VOLLEYBALL_X
+    global FOOTBALL_Y, VOLLEYBALL_Y, FOOTBALL_speed
+    global VOLLEYBALL_speed, BASKETBALL,BASKETBALL_speed, BASKETBALL_X, BASKETBALL_Y
+    global bg , score, timeIsUp, startTime,NET,x,y
+    global startBtnX, startBtnY,start,stageNum
+    size(800, 600)
+    
+    FOOTBALL =loadImage("BALL1.png")
+    VOLLEYBALL =loadImage("BALL2.png")
+    BASKETBALL =loadImage("BALL0.png")
+    bg =loadImage("WALL2.jpeg")
+    NET = loadImage("volleyball2.png")
+    
+    FOOTBALL_X = int(random(0,width))
+    VOLLEYBALL_X = int(random(0,width))
+    BASKETBALL_X = int(random(0,width))
+    FOOTBALL_Y = 0
+    VOLLEYBALL_Y = 0
+    BASKETBALL_Y = 0
+    FOOTBALL_speed = 3
+    VOLLEYBALL_speed = 3
+    BASKETBALL_speed = 5
+    score = 0
+    startTime= millis()
+    timeIsUp= False
+    x=350
+    y=525
+    startBtnX= width/2-75
+    startBtnY= 525
+    start= False
+    stageNum= 0
+    
+def resetGame():
+    global score, startTime, timeIsUp, FOOTBALL_Y, VOLLEYBALL_Y, BASKETBALL_Y, FOOTBALL_speed, BASKETBALL_speed, VOLLEYBALL_speed
+    score = 0
+    startTime = millis()
+    timeIsUp = False
+    FOOTBALL_Y = 0
+    VOLLEYBALL_Y = 0
+    BASKETBALL_Y = 0
+    
+def startbutton():
+    fill(255,0,0) 
+    rect(width/2-75,startBtnY, 100, 40) 
+    fill(255) 
+    textSize(20)
+    textAlign(CENTER, CENTER)
+    text("Start", width/2-30, startBtnY + 20)
+                    
+def draw():
+    global FOOTBALL_X, VOLLEYBALL_X,FOOTBALL_Y, VOLLEYBALL_Y
+    global BASKETBALL_X, BASKETBALL_Y,BASKETBALL_speed
+    global score, timeIsUp,x,startTime,start,y,stageNum
+    
+    image(bg,0,0,width,height)
+    image(FOOTBALL,FOOTBALL_X,FOOTBALL_Y,50,50)
+    image(VOLLEYBALL,VOLLEYBALL_X,VOLLEYBALL_Y,50,50)
+    image(BASKETBALL,BASKETBALL_X,BASKETBALL_Y,50,50)
+    image(NET,x,y,75,75)
+    
+    global score,timeIsUp,startTime
+    
+    if timeIsUp == True:
+        textSize(40)
+        fill(255)
+        text("GAME OVER", width/2, height/2 - 50)
+        text("Click 'E' to exit game", width/2, height/2 - 5)
+        return
+    
+    if score <0:
+        textSize(40)
+        fill(255)
+        text("GAME OVER", width/2, height/2 - 50)
+        text("Click 'E' to exit game", width/2, height/2 - 5)
+        return    
+    
+    # Level 1 Logic
+    if stageNum == 1:
+        if score >= 5:
+            textSize(30)
+            fill(255)
+            text("LEVEL-1 COMPLETED", 345, 275)
+            text(" Click 'E' to exit game", 345, 540)
+            text(" Click 'l' key to move to next level", 345, 570)
+            return
+        if (millis() - startTime) / 1000 >= 60:
+            timeIsUp = True
+
+    # Level 2 Logic
+    elif stageNum == 2:
+        if score >= 10:
+            textSize(30)
+            fill(255)
+            text("LEVEL-2 COMPLETED", 345, 275)
+            text(" Click 'E' to exit game", 345, 540)
+            text(" Click 'l' key to move to next level", 345, 570)
+            return
+        if (millis() - startTime) / 1000 >= 120:
+            timeIsUp = True
+
+    # Level 3 Logic
+    elif stageNum == 3:
+        if score >= 15:
+            textSize(30)
+            fill(255)
+            text("LEVEL-3 COMPLETED", 345, 275)
+            text(" GAME OVER ", 345, 570)
+            text(" Click 'E' to exit game", 345, 540)
+            return
+        if (millis() - startTime) / 1000 >= 180:
+            timeIsUp = True
+            
+    textSize(30)
+    fill(255)
+    text("TIME:"+str((millis() - startTime)/1000) + "s" ,65,20)
+    text("SCORE:" +str(score),65,50)
+
+    FOOTBALL_Y += FOOTBALL_speed 
+    VOLLEYBALL_Y += VOLLEYBALL_speed
+    BASKETBALL_Y += BASKETBALL_speed
+    
+    if BASKETBALL_X >= x and BASKETBALL_X <= x +90 and \
+    BASKETBALL_Y >= y  and BASKETBALL_Y <= y + 50:
+        score+= 5
+        BASKETBALL_X=random(0,width)
+        BASKETBALL_Y=0
+     
+    if FOOTBALL_X >= x and FOOTBALL_X <= x +90 and \
+    FOOTBALL_Y == y:
+        score-= 1
+     
+    if VOLLEYBALL_X >= x and VOLLEYBALL_X <= x +90 and \
+    VOLLEYBALL_Y >= y and VOLLEYBALL_Y <= y + 50:
+        score-= 1
+        VOLLEYBALL_X=random(0,width)
+        VOLLEYBALL_Y=0
+    
+    if FOOTBALL_Y > height:
+        FOOTBALL_Y = 0  
+        FOOTBALL_X = random(width)  
+        
+    if VOLLEYBALL_Y > height:
+        VOLLEYBALL_Y = 0
+        VOLLEYBALL_X = random(width)
+        
+    if BASKETBALL_Y > height:
+        BASKETBALL_Y = 0
+        BASKETBALL_X = random(width)
+        
+    if (keyPressed==True):
+        if key == CODED:
+            if keyCode == LEFT:
+                x=x-10
+        if key == CODED:
+            if keyCode == RIGHT:
+                x=x+10
+    
+    if start == False : 
+        image(bg,0,0,width,height)
+        textSize(30)
+        fill(255)
+        text("Instructions:", 100, 25)
+        text("Press Right Arrow Key to move right", 270, 60)
+        text("Press Left Arrow key to move left", 245, 95)
+        text("Catch the balls to earn points", 220, 130)
+        text(" Click 'E' to exit game", 150,165)
+        
+        startbutton()
+        
+    if  mousePressed==True and mouseX > width/2-75 and mouseX < width/2-75 + 100 and mouseY > startBtnY and mouseY < startBtnY + 40:
+        setup()
+        start = True      
+                   
+def keyPressed():
+    global stageNum
+    if(stageNum == 0):
+        stageNum = 1
+    elif stageNum == 1 and key =='l':
+        resetGame()
+        stageNum = 2
+    elif stageNum == 2 and key =='l':
+        resetGame()
+        stageNum = 3
+        
+    if (key == 'E' or key == 'e') or  score >=50 and timeIsUp==True:
+        setup()
+
+       
